@@ -1,0 +1,6 @@
+{
+  "name": "Customer Churn Ensemble Framework",
+  "description": "An Ensemble Learning Framework for Early Detection of Customer Churn in Service Industries.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
