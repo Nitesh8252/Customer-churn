@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Navbar } from './components/Navbar.tsx';
 import { DashboardView } from './components/DashboardView.tsx';
+import { PipelineView } from './components/PipelineView.tsx';
 import { ModelComparisonView } from './components/ModelComparisonView.tsx';
 import { PredictorView } from './components/PredictorView.tsx';
 import { CustomersView } from './components/CustomersView.tsx';
 import { PlaybookView } from './components/PlaybookView.tsx';
 import { AllMetricsResponse, CustomerRecord, CustomerProfile } from './types.ts';
-import { ShieldCheck, Activity, Cpu, Sparkles } from 'lucide-react';
+import { ShieldCheck, Cpu, GitBranch, CheckCircle2 } from 'lucide-react';
 
 export function App() {
   const [activeTab, setActiveTab] = useState<string>('dashboard');
@@ -88,7 +89,7 @@ export function App() {
         {isLoading && !metrics ? (
           <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-4">
             <div className="w-12 h-12 rounded-full border-4 border-indigo-500/20 border-t-indigo-500 animate-spin"></div>
-            <p className="text-sm font-medium text-slate-400">Calibrating Ensemble Machine Learning Models...</p>
+            <p className="text-sm font-medium text-slate-400">Initializing Machine Learning Pipelines...</p>
           </div>
         ) : (
           <>
@@ -100,6 +101,8 @@ export function App() {
                 onSelectCustomer={handleSelectCustomer}
               />
             )}
+
+            {activeTab === 'pipeline' && <PipelineView />}
 
             {activeTab === 'models' && <ModelComparisonView metrics={metrics} />}
 
@@ -128,13 +131,13 @@ export function App() {
           </div>
 
           <div className="flex items-center space-x-4 text-slate-400">
-            <span className="flex items-center space-x-1">
-              <Cpu className="w-3.5 h-3.5 text-slate-400" />
-              <span>LR + CART + Gradient Boosting</span>
+            <span className="flex items-center space-x-1 text-emerald-400">
+              <CheckCircle2 className="w-3.5 h-3.5" />
+              <span>Zero API Keys (Self-Contained)</span>
             </span>
             <span className="flex items-center space-x-1">
-              <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
-              <span>Gemini Retention Advisor</span>
+              <GitBranch className="w-3.5 h-3.5 text-indigo-400" />
+              <span>5-Stage Continuous ML Pipeline</span>
             </span>
           </div>
         </div>

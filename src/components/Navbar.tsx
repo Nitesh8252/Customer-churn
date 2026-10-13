@@ -1,5 +1,5 @@
 import React from 'react';
-import { ShieldAlert, BarChart3, Calculator, Users, BookOpen, Sparkles, Activity } from 'lucide-react';
+import { ShieldAlert, BarChart3, Calculator, Users, BookOpen, GitBranch, Sparkles, Activity } from 'lucide-react';
 
 interface NavbarProps {
   activeTab: string;
@@ -13,6 +13,7 @@ interface NavbarProps {
 export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, datasetStats }) => {
   const navItems = [
     { id: 'dashboard', label: 'Executive Dashboard', icon: BarChart3 },
+    { id: 'pipeline', label: 'ML Pipelines', icon: GitBranch },
     { id: 'models', label: 'Ensemble Models', icon: Activity },
     { id: 'predictor', label: 'Live Churn Predictor', icon: Calculator },
     { id: 'customers', label: 'Customer Directory', icon: Users },
@@ -31,8 +32,8 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, dataset
             <div>
               <div className="flex items-center space-x-2">
                 <span className="font-bold text-base tracking-tight text-white">ChurnGuard</span>
-                <span className="text-xs px-2 py-0.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 font-medium">
-                  Ensemble ML
+                <span className="text-xs px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-medium">
+                  Pipeline Architecture
                 </span>
               </div>
               <p className="text-xs text-slate-400 hidden sm:block">Customer Churn Early Detection Framework</p>
@@ -48,7 +49,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, dataset
                 <button
                   key={item.id}
                   onClick={() => setActiveTab(item.id)}
-                  className={`flex items-center space-x-2 px-3.5 py-2 rounded-lg text-sm font-medium transition-all duration-150 ${
+                  className={`flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-150 ${
                     isActive
                       ? 'bg-indigo-600/15 text-indigo-300 border border-indigo-500/30 shadow-sm shadow-indigo-500/10'
                       : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900/60'
@@ -65,18 +66,16 @@ export const Navbar: React.FC<NavbarProps> = ({ activeTab, setActiveTab, dataset
           <div className="flex items-center space-x-3">
             <div className="hidden lg:flex items-center space-x-2 px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-xs">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-              <span className="text-slate-400">Trained Base:</span>
-              <span className="font-semibold text-slate-200">
-                {datasetStats ? `${datasetStats.totalSamples.toLocaleString()} records` : '1,000 records'}
-              </span>
+              <span className="text-slate-400">Pure Pipeline:</span>
+              <span className="font-semibold text-emerald-300">Zero API Key</span>
             </div>
 
             <button
-              onClick={() => setActiveTab('predictor')}
+              onClick={() => setActiveTab('pipeline')}
               className="flex items-center space-x-1.5 px-3.5 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold shadow-md shadow-indigo-600/25 transition-all"
             >
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>Simulate Risk</span>
+              <GitBranch className="w-3.5 h-3.5" />
+              <span>Inspect Pipeline</span>
             </button>
           </div>
         </div>

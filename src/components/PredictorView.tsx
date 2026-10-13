@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Sparkles,
+  GitBranch,
   AlertTriangle,
   CheckCircle,
   HelpCircle,
   RotateCcw,
-  Bot,
   Lightbulb,
   ArrowRight,
   TrendingDown,
   Percent,
+  Cpu,
+  ShieldCheck,
 } from 'lucide-react';
-import { CustomerProfile, PredictionResponse, AIAdvisorRecommendation } from '../types.ts';
+import { CustomerProfile, PredictionResponse, PrescriptivePlan } from '../types.ts';
 
 interface PredictorViewProps {
   initialProfile?: Partial<CustomerProfile>;
@@ -124,10 +125,9 @@ export const PredictorView: React.FC<PredictorViewProps> = ({ initialProfile }) 
   }));
 
   const [prediction, setPrediction] = useState<PredictionResponse | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [advisorState, setAdvisorState] = useState<{
     loading: boolean;
-    data: AIAdvisorRecommendation | null;
+    data: PrescriptivePlan | null;
   }>({ loading: false, data: null });
 
   // Update when initialProfile prop changes
@@ -137,11 +137,10 @@ export const PredictorView: React.FC<PredictorViewProps> = ({ initialProfile }) 
     }
   }, [initialProfile]);
 
-  // Real-time calculation on profile changes
+  // Real-time calculation on profile changes via Inference Pipeline
   useEffect(() => {
     let isCancelled = false;
     async function runPrediction() {
-      setIsLoading(true);
       try {
         const res = await fetch('/api/predict', {
           method: 'POST',
@@ -156,8 +155,6 @@ export const PredictorView: React.FC<PredictorViewProps> = ({ initialProfile }) 
         }
       } catch (err) {
         console.error('Prediction request error:', err);
-      } finally {
-        if (!isCancelled) setIsLoading(false);
       }
     }
 
@@ -170,13 +167,11 @@ export const PredictorView: React.FC<PredictorViewProps> = ({ initialProfile }) 
   const updateField = <K extends keyof CustomerProfile>(key: K, value: CustomerProfile[K]) => {
     setProfile((prev) => {
       const updated = { ...prev, [key]: value };
-      // Auto-update TotalCharges proportionally if tenure or monthly changes
       if (key === 'tenure' || key === 'MonthlyCharges') {
         updated.TotalCharges = Math.round(updated.MonthlyCharges * updated.tenure * 100) / 100;
       }
       return updated;
     });
-    // Invalidate stale advisor output
     setAdvisorState({ loading: false, data: null });
   };
 
@@ -212,13 +207,13 @@ export const PredictorView: React.FC<PredictorViewProps> = ({ initialProfile }) 
         <div>
           <div className="inline-flex items-center space-x-2 px-2.5 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-xs font-semibold">
             <Percent className="w-3.5 h-3.5 text-indigo-400" />
-            <span>Interactive Simulator &amp; What-If Engine</span>
+            <span>Interactive Inference Pipeline Simulator</span>
           </div>
           <h2 className="text-2xl font-bold tracking-tight text-white mt-1">
             Real-Time Churn Propensity Calculator
           </h2>
           <p className="text-xs sm:text-sm text-slate-300">
-            Adjust customer attributes below to observe instant blended predictions from the three machine learning models and request an AI-generated retention strategy.
+            Adjust customer attributes below to execute the end-to-end inference pipeline and generate deterministic prescriptive retention plans (zero API keys needed).
           </p>
         </div>
 
@@ -431,7 +426,7 @@ export const PredictorView: React.FC<PredictorViewProps> = ({ initialProfile }) 
             </div>
           </div>
 
-          {/* Card: Account Demographics */}
+          {/* Card: Demographics */}
           <div className="p-5 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-4">
             <h3 className="text-xs font-bold uppercase tracking-wider text-emerald-400">
               3. Demographic &amp; Household Profile
@@ -486,13 +481,13 @@ export const PredictorView: React.FC<PredictorViewProps> = ({ initialProfile }) 
           </div>
         </div>
 
-        {/* Right Column: Live Output & AI Retention Strategist (5 cols) */}
+        {/* Right Column: Live Output & Prescriptive Action Plan (5 cols) */}
         <div className="lg:col-span-5 space-y-6">
           {/* Prediction Gauge Card */}
           <div className="p-6 rounded-2xl bg-gradient-to-b from-slate-900 to-slate-950 border border-slate-800 shadow-xl space-y-5">
             <div className="flex items-center justify-between">
               <div>
-                <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400">Ensemble Forecast</span>
+                <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400">Ensemble Pipeline Output</span>
                 <h3 className="text-lg font-bold text-white">Churn Propensity</h3>
               </div>
 
@@ -514,7 +509,6 @@ export const PredictorView: React.FC<PredictorViewProps> = ({ initialProfile }) 
             {/* Circular Gauge / Stat */}
             <div className="flex items-center justify-center py-3">
               <div className="relative w-44 h-44 flex items-center justify-center">
-                {/* SVG Radial Meter */}
                 <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
                   <circle
                     cx="50"
@@ -547,10 +541,10 @@ export const PredictorView: React.FC<PredictorViewProps> = ({ initialProfile }) 
               </div>
             </div>
 
-            {/* Sub-model Breakdown Bars */}
+            {/* Sub-model Consensus */}
             {prediction && (
               <div className="space-y-2.5 pt-3 border-t border-slate-800">
-                <span className="text-xs font-semibold text-slate-300 block">Sub-Model Consensus</span>
+                <span className="text-xs font-semibold text-slate-300 block">Sub-Model Consensus (Pipeline Stage 3)</span>
 
                 {/* Logistic Regression */}
                 <div>
@@ -620,7 +614,7 @@ export const PredictorView: React.FC<PredictorViewProps> = ({ initialProfile }) 
               </div>
             )}
 
-            {/* CTA: Request AI Retention Strategy */}
+            {/* CTA: Run Prescriptive Decision Pipeline */}
             <div className="pt-2">
               <button
                 onClick={handleGenerateAdvisor}
@@ -630,26 +624,26 @@ export const PredictorView: React.FC<PredictorViewProps> = ({ initialProfile }) 
                 {advisorState.loading ? (
                   <>
                     <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                    <span>Formulating Retention Strategy...</span>
+                    <span>Running Prescriptive Rules Pipeline...</span>
                   </>
                 ) : (
                   <>
-                    <Bot className="w-4 h-4" />
-                    <span>Generate AI Retention Action Plan</span>
+                    <GitBranch className="w-4 h-4" />
+                    <span>Run Prescriptive Decision Pipeline</span>
                   </>
                 )}
               </button>
             </div>
           </div>
 
-          {/* AI Retention Advisor Output Card */}
+          {/* Prescriptive Pipeline Output Card */}
           {advisorState.data && (
             <div className="p-5 rounded-2xl bg-indigo-950/20 border border-indigo-500/30 space-y-4 animate-in fade-in duration-300">
               <div className="flex items-center justify-between border-b border-indigo-500/20 pb-3">
                 <div className="flex items-center space-x-2">
-                  <Sparkles className="w-4 h-4 text-indigo-400" />
+                  <ShieldCheck className="w-4 h-4 text-emerald-400" />
                   <span className="text-xs font-bold text-indigo-300 uppercase tracking-wider">
-                    Executive Retention Directive
+                    Prescriptive Action Package
                   </span>
                 </div>
                 <span className="text-[11px] font-semibold px-2 py-0.5 rounded-md bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
@@ -671,7 +665,7 @@ export const PredictorView: React.FC<PredictorViewProps> = ({ initialProfile }) 
               </div>
 
               <div>
-                <span className="text-[11px] font-bold text-slate-300 block mb-1.5">Immediate Interventions (Next 48 Hours)</span>
+                <span className="text-[11px] font-bold text-slate-300 block mb-1.5">Immediate Interventions (Within 48 Hours)</span>
                 <ul className="space-y-1.5 text-xs text-slate-300">
                   {advisorState.data.immediateInterventions.map((action, i) => (
                     <li key={i} className="flex items-start space-x-2">
@@ -683,7 +677,7 @@ export const PredictorView: React.FC<PredictorViewProps> = ({ initialProfile }) 
               </div>
 
               <div>
-                <span className="text-[11px] font-bold text-slate-300 block mb-1.5">Long-Term Ecosystem Stickiness</span>
+                <span className="text-[11px] font-bold text-slate-300 block mb-1.5">Long-Term Ecosystem Strategies</span>
                 <ul className="space-y-1.5 text-xs text-slate-300">
                   {advisorState.data.longTermStrategies.map((strat, i) => (
                     <li key={i} className="flex items-start space-x-2">
@@ -692,6 +686,10 @@ export const PredictorView: React.FC<PredictorViewProps> = ({ initialProfile }) 
                     </li>
                   ))}
                 </ul>
+              </div>
+
+              <div className="pt-2 border-t border-indigo-500/20 text-[10px] text-slate-400 font-mono">
+                Triggered Rules: {advisorState.data.triggeredRules.length} | Pipeline: 100% On-Premise Deterministic
               </div>
             </div>
           )}

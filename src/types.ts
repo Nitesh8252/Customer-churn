@@ -86,6 +86,31 @@ export interface PredictionBreakdown {
   gradientBoosting: number;
 }
 
+export interface PipelineStageResult {
+  id: string;
+  name: string;
+  stageType: 'ingestion' | 'preprocessing' | 'ensemble_scoring' | 'calibration' | 'prescriptive_rules';
+  status: 'completed' | 'active' | 'pending';
+  durationMs: number;
+  description: string;
+  inputDataSummary: string;
+  outputDataSummary: string;
+  metadata?: Record<string, any>;
+}
+
+export interface PipelineExecutionTrace {
+  pipelineId: string;
+  timestamp: string;
+  totalDurationMs: number;
+  stages: PipelineStageResult[];
+  transformedVector: number[];
+  ensembleWeights: {
+    logisticRegression: number;
+    decisionTree: number;
+    gradientBoosting: number;
+  };
+}
+
 export interface PredictionResponse {
   probability: number;
   churnPrediction: 'Yes' | 'No';
@@ -94,13 +119,16 @@ export interface PredictionResponse {
   modelBreakdown: PredictionBreakdown;
   topRiskFactors: string[];
   mitigationSuggestions: string[];
+  pipelineTrace?: PipelineExecutionTrace;
 }
 
-export interface AIAdvisorRecommendation {
+export interface PrescriptivePlan {
   summary: string;
   riskAssessment: string;
   immediateInterventions: string[];
   longTermStrategies: string[];
   recommendedOffer: string;
   expectedChurnReduction: string;
+  triggeredRules: string[];
+  pipelineOrigin: string;
 }
